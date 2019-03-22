@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/jquery-3.2.1.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/plug-in.min.js"></script>
+
+</head>
+<style>
+    /*蓝色按钮,绝对定位*/
+    .blueButton {
+        position: absolute;
+        display: block;
+        width: 70px;
+        height: 18px;
+        background-color: #6aee2b;
+        color: #fff;
+        text-decoration: none;
+        text-align: center;
+        font: normal normal normal 10px 'Microsoft YaHei';
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .blueButton:hover {
+        text-decoration: none;
+    }
+
+    /*自定义上传,位置大小都和a完全一样,而且完全透明*/
+    .myFileUpload {
+        position: absolute;
+        display: block;
+        width: 100px;
+        height: 40px;
+        opacity: 0;
+    }
+
+    /*显示上传文件夹名的Div*/
+    .show {
+        position: relative;
+        top: 20px;
+        left: 80px;
+        width: 100%;
+        height: 30px;
+        font: normal normal normal 14px/20px 'Microsoft YaHei';
+    }
+</style>
+<body>
+<div class="text-center">
+    <b style="font-size: 20px;">发邮件</b>
+</div>
+<div class="container">
+    <form id="emailForm" enctype="multipart/form-data">
+        <div class="form-group ">
+            <label for="toPerson" style="font-size: 18px;">收件人 </label>
+            <input type="text" name="to" id="toPerson" class="input-lg form-control">
+        </div>
+        <div class="form-group">
+            <label for="comment" style="font-size: 18px;">主题 </label>
+            <input type="text" name="subject" id="comment" class="input-lg form-control">
+        </div>
+        <div class="form-group ">
+            <a href='javascript:void(0);' class="blueButton">
+                <span class="glyphicon glyphicon-link"></span> 添加附件</a>
+            <input type="file" name="file" class="myFileUpload" multiple="multiple" id="file"/>
+            <div class="show"></div>
+        </div>
+        <div class="col-12 form-group">
+            <p><b style="font-size: 18px;">正文</b></p>
+            <textarea name="contentText" id="comments" class="input-lg form-control" rows="8"
+                      style="max-width: 100%"></textarea>
+        </div>
+    </form>
+    <div style="margin-left: 150px;margin-right: auto;">
+        <button class="btn btn-info btn-block" style="width: 70%;" id="submitEmail">发送</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var filenam = "";
+    $(document).ready(function () {
+        $(".myFileUpload").change(function () {
+            var file = document.getElementById('file').files;
+            for (var i = 0; file.length > i; i++) {
+                filenam += file[i].name + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+            }
+            $(".show").html(filenam);
+        });
+    });
+    $(function () {
+        $("#submitEmail").on("click", function () {
+            var form = new FormData($("#emailForm")[0]);
+            $.ajax({
+                url: 'sendEmail',
+                data: form,
+                processData: false,
+                contentType: false,
+                type: 'post',
+                dataType: 'json',
+                success: function (res) {
+                    if (res == true) {
+                        alert("发送成功");
+                        window.location.reload();
+                    }
+                    else {
+                        alert("发送失败");
+                    }
+                }
+            })
+        })
+    })
+</script>
+</body>
+</html>
